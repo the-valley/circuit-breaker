@@ -23,8 +23,7 @@ public class CircuitBreakerRunner {
     public static <T> T run(CircuitBreaker<T> breaker, Callable<T> callable) {
         // 执行前先检查状态
         breaker.check();
-        final State<T> state = breaker.getState();
-        return state.excute(callable);
+        return breaker.execute(callable);
     }
 
     public static void main(String[] args) {

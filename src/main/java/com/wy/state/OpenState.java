@@ -15,7 +15,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class OpenState<T> implements State<T> {
 
+    /**
+     * 熔断器
+     */
+    private final CircuitBreaker<T> circuitBreaker;
+
     public OpenState(CircuitBreaker<T> circuitBreaker, long duration) {
+        this.circuitBreaker = circuitBreaker;
         CompletableFuture.runAsync(() -> {
             try {
                 // 熔断持续 duration，切换到关闭状态
@@ -30,8 +36,6 @@ public class OpenState<T> implements State<T> {
 
     @Override
     public T excute(Callable<T> callable) {
-        // 快速失败
-        log.error("服务不可用");
-        return null;
+        return circuitBreaker.fallback();
     }
 }

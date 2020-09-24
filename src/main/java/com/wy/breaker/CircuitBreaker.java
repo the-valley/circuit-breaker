@@ -3,6 +3,8 @@ package com.wy.breaker;
 import com.wy.counter.ExecuteStatusEnum;
 import com.wy.state.State;
 
+import java.util.concurrent.Callable;
+
 /**
  * @author wy
  * @date 2020/9/23
@@ -31,4 +33,15 @@ public interface CircuitBreaker<T> {
      * @return
      */
     void check();
+
+    /**
+     * 执行被保护的代码块
+     */
+    T execute(Callable<T> callable);
+
+    /**
+     * 熔断器打开时的默认逻辑
+     * @return
+     */
+    T fallback();
 }

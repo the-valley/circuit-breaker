@@ -7,6 +7,7 @@ import com.wy.state.OpenState;
 import com.wy.state.State;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -89,6 +90,17 @@ public class FailureRateCircuitBreaker<T> implements CircuitBreaker<T> {
             // 切换到打开状态后，重置窗口
             windowCounter.reset();
         }
+    }
+
+    @Override
+    public T execute(Callable<T> callable) {
+        return this.state.excute(callable);
+    }
+
+    @Override
+    public T fallback() {
+        log.error("服务不可用");
+        return null;
     }
 
     public Integer getFailureTh() {
