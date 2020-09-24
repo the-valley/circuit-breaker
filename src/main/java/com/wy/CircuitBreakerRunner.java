@@ -2,7 +2,6 @@ package com.wy;
 
 import com.wy.breaker.CircuitBreaker;
 import com.wy.breaker.FailureRateCircuitBreaker;
-import com.wy.state.State;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
