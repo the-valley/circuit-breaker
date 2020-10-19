@@ -18,18 +18,21 @@ public interface CircuitBreaker<T> {
 
     /**
      * 设置当前
-     * @param state
+     *
+     * @param state 要被设置的状态
      */
     void setState(State<T> state);
 
     /**
      * 记录执行状态到队列中
+     *
      * @param status
      */
     void recordStatus(ExecuteStatusEnum status);
 
     /**
      * 判断是否需要熔断，如果需要则进行状态切换
+     *
      * @return
      */
     void check();
@@ -41,7 +44,34 @@ public interface CircuitBreaker<T> {
 
     /**
      * 熔断器打开时的默认逻辑
+     *
      * @return
      */
     T fallback();
+
+    /**
+     * 获得当前窗口中已经失败的数
+     *
+     * @return 失败数
+     */
+    Integer getFailureCount();
+
+    /**
+     * 获取失败阈值
+     */
+    Integer getFailureTh();
+
+    /**
+     * 设置失败阈值
+     */
+    void setFailureTh(Integer failureTh);
+
+    long getDuration();
+
+    void setDuration(long duration);
+
+    /**
+     * 重置计数器
+     */
+    void resetCounter();
 }

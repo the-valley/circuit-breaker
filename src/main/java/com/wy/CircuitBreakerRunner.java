@@ -44,6 +44,7 @@ public class CircuitBreakerRunner {
         final CompletableFuture<Void> task2 = CompletableFuture.runAsync(() -> {
             for (int i = 0; i < 100; i++) {
                 final String result = CircuitBreakerRunner.run(breaker, () -> {
+                    // 下面的语句会抛出异常
                     int result1 = 10 / 0;
                     return Integer.toString(result1);
                 });

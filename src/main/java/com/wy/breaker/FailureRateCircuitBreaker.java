@@ -82,13 +82,11 @@ public class FailureRateCircuitBreaker<T> implements CircuitBreaker<T> {
 
     @Override
     public void check() {
-        // 判断已有的失败数量是不是达到阈值
-        final Integer countFailure = windowCounter.countFailure();
-        if (countFailure >= failureTh) {
-            log.info("失败率达到阈值，服务熔断");
-            this.setState(new OpenState<>(this, duration));
-            // 切换到打开状态后，重置窗口
-            windowCounter.reset();
+        try {
+            readLock.lock();
+            this.state.check();
+        } finally {
+            readLock.unlock();
         }
     }
 
@@ -103,27 +101,33 @@ public class FailureRateCircuitBreaker<T> implements CircuitBreaker<T> {
         return null;
     }
 
+    @Override
+    public Integer getFailureCount() {
+        return windowCounter.countFailure();
+    }
+
+    @Override
     public Integer getFailureTh() {
         return failureTh;
     }
 
+    @Override
     public void setFailureTh(Integer failureTh) {
         this.failureTh = failureTh;
     }
 
+    @Override
     public long getDuration() {
         return duration;
     }
 
+    @Override
     public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public SlidingWindowCounter getWindowCounter() {
-        return windowCounter;
-    }
-
-    public void setWindowCounter(SlidingWindowCounter windowCounter) {
-        this.windowCounter = windowCounter;
+    @Override
+    public void resetCounter() {
+        windowCounter.reset();
     }
 }

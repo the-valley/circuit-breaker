@@ -42,4 +42,16 @@ public class CloseState<T> implements State<T> {
         }
 
     }
+
+    @Override
+    public void check() {
+        // 判断已有的失败数量是不是达到阈值
+        final Integer countFailure = circuitBreaker.getFailureCount();
+        if (countFailure >=circuitBreaker.getFailureTh()) {
+            log.info("失败率达到阈值，服务熔断");
+            circuitBreaker.setState(new OpenState<>(circuitBreaker));
+            // 切换到打开状态后，重置窗口
+            circuitBreaker.resetCounter();
+        }
+    }
 }
